@@ -1,5 +1,9 @@
+from itertools import chain, tee
+
+tree = "#"
+
 def read_file(filename):
-        matrix = []
+        board = []
         with open(filename) as f:
             rows = f.readlines()
             for row in rows:
@@ -7,21 +11,22 @@ def read_file(filename):
                 row = row.strip()
                 for col in row:
                     tmp.append(col)
-                print(len(tmp))
-                matrix.append(tmp)
-        return matrix
+                board.append(tmp)
+        return board
 
-def is_tree_at_coordinates(hill_x, hill_y, map_basis):
-    map_x = hill_x % len(map_basis[hill_y])
-    return map_basis[hill_y][map_x] == "#"
+def is_tree(x, y, board):
+    map_x = x % len(board[y])
+    return board[y][map_x] == tree
 
-def tree_count_for_slope(right_increment, down_increment, map_basis):
+def tree_count(right_increment, down_increment, board):
+    # initial position is (0,0)
     right_coordinate = 0
     down_coordinate = 0
     tree_count = 0
- 
-    while down_coordinate < len(map_basis):
-        if is_tree_at_coordinates(right_coordinate, down_coordinate, map_basis):
+    
+    # go down until the end of the map
+    while down_coordinate < len(board):
+        if is_tree(right_coordinate, down_coordinate, board):
             tree_count += 1
         right_coordinate += right_increment
         down_coordinate += down_increment
@@ -29,10 +34,5 @@ def tree_count_for_slope(right_increment, down_increment, map_basis):
     return tree_count
     
 if __name__ == "__main__":
-    map_basis = read_file("input-3.txt")
-    print(tree_count_for_slope(3,1, map_basis))
-
-
-
-  
-
+    board = read_file("input-3.txt")
+    print("Number of trees: ", tree_count(3, 1, board))

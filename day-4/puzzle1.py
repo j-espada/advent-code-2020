@@ -1,34 +1,39 @@
-import re
-
-'''
-byr (Birth Year)
-iyr (Issue Year)
-eyr (Expiration Year)
-hgt (Height)
-hcl (Hair Color)
-ecl (Eye Color)
-pid (Passport ID)
-cid (Country ID) -> might miss
-'''
 def readfile(filename):
-    with open(filename) as f:
-        return f.readlines()
+    with open(filename) as file:
+        data = [line.strip() for line in file]
+        data.append("")
+        return data
 
-def pre_process(passports):
-    f = lambda x: "{0}:[0-9]([^\s]+)|\n".format(x)
-    m = {}
-    passports_lst = {}
+def pre_process(data):
+   
+    passports = [] 
+    passport = {}
 
-    for passline in passports:
-        if "\n" == passline:
-            m = {}
+    for line in data:
+        if line == "":
+            passports.append(passport)
+            passport = {}
         else:
-           pid = 
+            fields = line.split()
+            for field in fields:
+                field = field.split(":")
+                passport[field[0]] = field[1]
+    
+    return passports
 
 def main(filename):
 
-    content = readfile(filename)
-    pre_process(content)
+    data = readfile(filename)
+    passports = pre_process(data)
+    acc = 0
+
+    required_entries = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"}
+
+    for passport in passports:
+        if all(val in passport for val in required_entries):
+            acc += 1
+
+    print(acc)
 
 if __name__ == "__main__":
     main("input-4.txt")
