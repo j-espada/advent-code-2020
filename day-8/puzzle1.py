@@ -40,8 +40,8 @@ def has_cycle(progam):
     acc = 0
     statement_pointer = 0
     last_pointer = len(progam) - 1
-    visited = np.full(len(progam), False)
-    pred = np.full(len(progam), -1)
+    visited = np.full(len(progam), False, dtype=bool)
+    pred = np.full(len(progam), -1, dtype=int)
     while True:
 
         statement = progam[statement_pointer]

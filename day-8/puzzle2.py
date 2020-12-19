@@ -13,9 +13,9 @@ def check_cycle(progam, statement, new_instruction):
     acc, is_cycle, _pred, _statement = has_cycle(progam)
     statement.instruction = old_value
 
-    return acc, is_cycle
+    return acc, is_cycle, _pred, _statement
 
-def main(filename):
+def brute_force(filename):
     orginal_program = read_file("input-8.txt")
     return find_acc(orginal_program, orginal_program)
 
@@ -24,21 +24,21 @@ def find_acc(program, statements):
         acc = None
         is_cycle = None
         if statement.is_operation(JMP):
-            acc, is_cycle = check_cycle(program, statement, NOP)
+            acc, is_cycle, _pred, _statement = check_cycle(program, statement, NOP)
         elif statement.is_operation(NOP):
-            acc, is_cycle = check_cycle(program, statement, JMP)
+            acc, is_cycle, _pred, _statement = check_cycle(program, statement, JMP)
         if is_cycle is False:
             return acc
 
 def enum_cycle(statement, program, pred):
     id = statement.id
     cycle = set()
-    while id != None and program[int(id)] not in cycle:
-        cycle.add(program[int(id)])
+    while id != None and program[id] not in cycle:
+        cycle.add(program[id])
         id = pred[id]
     return cycle
 
-def main2(filename):
+def from_cycle(filename):
     orginal_program = read_file(filename)
     _acc, is_cycle, pred, statement = has_cycle(orginal_program)
     
@@ -49,4 +49,4 @@ def main2(filename):
         return find_acc(orginal_program, cycle)
 
 if __name__ == "__main__":
-    print(main2("input-8.txt"))
+    print(from_cycle("input-8.txt"))
