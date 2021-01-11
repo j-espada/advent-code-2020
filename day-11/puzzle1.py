@@ -1,6 +1,7 @@
 EMPTY_SEAT = 'L'
 OCCUPIED_SEAT = '#'
 FLOOR = '.'
+DIRECTIONS = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
 def read_file(file_name):
     with open(file_name) as f:
@@ -25,45 +26,40 @@ def print_grid(grid):
     for r in range(len(grid)):
         print(grid[r])
 
-def main(file_name, neighbor_pos):
+def count_occupied (r, c, max_row, max_col, grid):
+    count = 0 
+    # 8 neighoring position
+    for i,j in DIRECTIONS:
+        delta_r = r + i
+        delta_c = c + j
+        if 0 <= delta_r < max_row and 0 <= delta_c < max_col and grid[delta_r][delta_c] == OCCUPIED_SEAT:
+            count += 1
+    return count
+
+def main(file_name):
     grid = read_file(file_name)
     n_rows = len(grid)
     n_cols = len(grid[0])
     
-    chaos = False
     while True:
         update = []
         for r,c in iter(n_rows, n_cols):
             k = grid[r][c]
-            if k == EMPTY_SEAT:
-                    adj_occupied = True
-                    for _r,_c in neighbor_pos(r, c, n_rows, n_cols):
-                        if grid[_r][_c] == OCCUPIED_SEAT:
-                            adj_occupied = False
-                            break
-                    if adj_occupied:
-                        update.append((r, c, OCCUPIED_SEAT))
-                        chaos = True
-            elif k == OCCUPIED_SEAT:
-                    counter = 0
-                    for _r,_c in neighbor_pos(r, c, n_rows, n_cols):
-                        if grid[_r][_c] == OCCUPIED_SEAT:
-                            counter += 1
-                        if counter >= 4:
-                            update.append((r, c, EMPTY_SEAT))
-                            chaos = True
+            count_occ = count_occupied (r, c, n_rows, n_cols, grid)
+            if k == EMPTY_SEAT and count_occ == 0:
+                update.append((r, c, OCCUPIED_SEAT))
+            elif k == OCCUPIED_SEAT and count_occ >=4:               
+                update.append((r, c, EMPTY_SEAT))
                              
         for r,c,s in update:
             grid[r][c] = s
 
-        if chaos == False:
+        if len(update) == 0:
             break
-
-        chaos = False
         
     n = sum(map(lambda x: x.count(OCCUPIED_SEAT), grid))
     print(n)
 
 if __name__ == "__main__":
     file_name = "input-11.txt"
-    main(file_name, adj_pos)
+    main(file_name)
