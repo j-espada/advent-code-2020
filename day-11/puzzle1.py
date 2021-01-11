@@ -13,7 +13,7 @@ def iter(max_row, max_col):
     for i in range(max_row):
         for j in range(max_col):
             yield (i,j)
-            
+
 def print_grid(grid):
     for r in range(len(grid)):
         print(grid[r])
@@ -28,7 +28,7 @@ def count_occupied (r, c, max_row, max_col, grid):
             count += 1
     return count
 
-def main(file_name):
+def main(file_name, count_occupied_seats):
     grid = read_file(file_name)
     n_rows = len(grid)
     n_cols = len(grid[0])
@@ -37,7 +37,7 @@ def main(file_name):
         update = []
         for r,c in iter(n_rows, n_cols):
             k = grid[r][c]
-            count_occ = count_occupied (r, c, n_rows, n_cols, grid)
+            count_occ = count_occupied_seats(r, c, n_rows, n_cols, grid)
             if k == EMPTY_SEAT and count_occ == 0:
                 update.append((r, c, OCCUPIED_SEAT))
             elif k == OCCUPIED_SEAT and count_occ >=4:               
@@ -54,4 +54,4 @@ def main(file_name):
 
 if __name__ == "__main__":
     file_name = "input-11.txt"
-    main(file_name)
+    main(file_name, count_occupied)
