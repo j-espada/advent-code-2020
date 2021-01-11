@@ -13,15 +13,7 @@ def iter(max_row, max_col):
     for i in range(max_row):
         for j in range(max_col):
             yield (i,j)
-
-def adj_pos(row, col, max_row, max_col):
-    for i in range(-1,2):
-        for j in range(-1,2):
-            if row == row + i and col == col + j:
-                continue
-            if 0 <= row + i < max_row and 0 <= col + j < max_col:
-                yield (row+i, col+j)
-
+            
 def print_grid(grid):
     for r in range(len(grid)):
         print(grid[r])
