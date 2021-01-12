@@ -28,19 +28,20 @@ def count_occupied (r, c, max_row, max_col, grid):
             count += 1
     return count
 
-def main(file_name, count_occupied_seats):
+def main(file_name, count_occupied_seats, occ_seats=4):
     grid = read_file(file_name)
     n_rows = len(grid)
     n_cols = len(grid[0])
     
     while True:
         update = []
+        
         for r,c in iter(n_rows, n_cols):
             k = grid[r][c]
             count_occ = count_occupied_seats(r, c, n_rows, n_cols, grid)
             if k == EMPTY_SEAT and count_occ == 0:
                 update.append((r, c, OCCUPIED_SEAT))
-            elif k == OCCUPIED_SEAT and count_occ >=4:               
+            elif k == OCCUPIED_SEAT and count_occ >= occ_seats:    
                 update.append((r, c, EMPTY_SEAT))
                              
         for r,c,s in update:
