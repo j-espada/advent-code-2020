@@ -1,54 +1,46 @@
 from puzzle1 import read_file
 from puzzle1 import taxi_cab_dist
 import numpy as np
+import math
 
-
-ROTATION_MATRIXES = {
-    90 : np.array([[0, -1], [1, 0]]), 
-    180 : np.array([[-1, 0], [0, -1]]), 
-    270 : np.array([[0, 1], [-1, 0]])
-}
-
-def rotate(point, center, deg):
-    _point = np.array(point)
-    _center = np.array(center)
-    delta = _point - _center
-    return np.matmul(ROTATION_MATRIXES[deg], delta) + _center
+def rotate(point, origin, angle):
+    # source: https://stackoverflow.com/a/34374437
+    ox, oy = origin
+    px, py = point
+    _angle = np.radians(angle)
+    qx = ox + np.cos(_angle) * (px - ox) - np.sin(_angle) * (py - oy)
+    qy = oy + np.sin(_angle) * (px - ox) + np.cos(_angle) * (py - oy)
+    return np.array([int(round(qx)), int(round(qy))])
 
 def main(file_name):
     instructions =  read_file(file_name)
 
     # north/south ; west/east
-    boat = [0, 0]
-    waypoint = [1, 10]
+    boat = np.array([0, 0])
+    waypoint = np.array([10, 1])
 
     for action, value in instructions:
         if action == 'N':
-            waypoint[0] += value
-        elif action == 'S':
-            waypoint[0] += value
-        elif action == 'E':
             waypoint[1] += value
-        elif action == 'W':
+        elif action == 'S':
             waypoint[1] -= value
+        elif action == 'E':
+            waypoint[0] += value
+        elif action == 'W':
+            waypoint[0] -= value
         elif action == 'L':
-            waypoint = rotate(waypoint, boat, value % 360)
+            waypoint = rotate(waypoint, (0,0), value)
         elif action == 'R':
-            waypoint =rotate(waypoint, boat, (360 - value))
-         
-        elif action == 'F':
-           
-            boat[0] += value * waypoint[0]
-            boat[1] += value * waypoint[1]
-
-            waypoint[0] +=  boat[0]
-            waypoint[1] +=  boat[1]
-
+            waypoint = rotate(waypoint, (0,0), (-value)) 
+        elif action == 'F':  
+            boat[0] += waypoint[0] * value
+            boat[1] += waypoint[1] * value
+        
         print(action, value)
         print("waypoint : ", waypoint)
         print("boat : ", boat)
-
-
+    
+    print("taxi cab: ", taxi_cab_dist(boat, [0,0]))
 
 if __name__ == "__main__":
-    main("test.txt")
+    main("input-12.txt")
