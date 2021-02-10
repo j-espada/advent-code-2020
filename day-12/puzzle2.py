@@ -3,31 +3,26 @@ from puzzle1 import taxi_cab_dist
 import numpy as np
 
 
-ROTATION_MATRIXES = {90 : np.array([[], []]), 180: np.array([[], []]), 270: np.array([[], []])}
+ROTATION_MATRIXES = {
+    90 : np.array([[0, -1], [1, 0]]), 
+    180 : np.array([[-1, 0], [0, -1]]), 
+    270 : np.array([[0, 1], [-1, 0]])
+}
 
 def rotate(point, center, deg):
-
     _point = np.array(point)
-    _center = np.array(point)
-    _deg = deg
-    print(deg, _deg)
+    _center = np.array(center)
     delta = _point - _center
-    rot = np.array([
-        [int(np.cos(_deg)), int(-np.sin(_deg))], 
-        [int(np.sin(_deg)), int(np.cos(_deg))]
-                    ])
-    print(rot)
-    return rot * delta + _center
+    return np.matmul(ROTATION_MATRIXES[deg], delta) + _center
 
 def main(file_name):
     instructions =  read_file(file_name)
 
     # north/south ; west/east
     boat = [0, 0]
-    waypoint = [boat[0] + 1, boat[1] + 10]
+    waypoint = [1, 10]
 
     for action, value in instructions:
-        
         if action == 'N':
             waypoint[0] += value
         elif action == 'S':
@@ -37,15 +32,17 @@ def main(file_name):
         elif action == 'W':
             waypoint[1] -= value
         elif action == 'L':
-            pass
+            waypoint = rotate(waypoint, boat, value % 360)
         elif action == 'R':
-            print(rotate(waypoint, boat, 90))
-            print(rotate(waypoint, boat, 180))
-            print(rotate(waypoint, boat, 270))
-
+            waypoint =rotate(waypoint, boat, (360 - value))
+         
         elif action == 'F':
+           
             boat[0] += value * waypoint[0]
             boat[1] += value * waypoint[1]
+
+            waypoint[0] +=  boat[0]
+            waypoint[1] +=  boat[1]
 
         print(action, value)
         print("waypoint : ", waypoint)
