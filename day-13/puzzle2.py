@@ -13,7 +13,7 @@ def read_file(file_name):
         return l
 
 if __name__ == "__main__":
-    lst_bus = read_file("input-13.txt")
+    lst_bus = read_file("test.txt")
 
     m = {}
     
